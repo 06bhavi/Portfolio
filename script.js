@@ -79,36 +79,41 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 });
 
-// Contact form handling
+// ----------------------------------------------------
+// ---- START of EmailJS integration changes ----
+// ----------------------------------------------------
+
+(function() {
+    emailjs.init({
+      publicKey: 'wm7fpemQ4WBkAYPdE',
+    });
+})();
+
+// Contact form handling using EmailJS
 document.getElementById('contactForm').addEventListener('submit', function(e) {
     e.preventDefault();
-    
-    // Get form data
-    const formData = new FormData(this);
-    const name = formData.get('name');
-    const email = formData.get('email');
-    const subject = formData.get('subject');
-    const message = formData.get('message');
-    
-    // Create mailto link
-    const mailtoLink = `mailto:Bhavini765@gmail.com?subject=${encodeURIComponent(subject)}&body=${encodeURIComponent(`Name: ${name}\nEmail: ${email}\n\nMessage:\n${message}`)}`;
-    
-    // Open email client
-    window.location.href = mailtoLink;
-    
-    // Show success message
-    showNotification('Message prepared! Your email client should open shortly.', 'success');
-    
-    // Reset form
-    this.reset();
+
+    emailjs.sendForm('service_bhavini6', '__ejs-test-mail-service__', this)
+        .then(() => {
+            showNotification('Message sent successfully!', 'success');
+            // Reset form
+            this.reset();
+        }, (error) => {
+            showNotification('Failed to send the message. Please try again later.', 'error');
+            console.error('FAILED...', error);
+        });
 });
+
+// ----------------------------------------------------
+// ---- END of EmailJS integration changes ----
+// ----------------------------------------------------
 
 // Notification system
 function showNotification(message, type = 'info') {
     // Remove existing notifications
     const existingNotifications = document.querySelectorAll('.notification');
     existingNotifications.forEach(notification => notification.remove());
-    
+
     // Create notification element
     const notification = document.createElement('div');
     notification.className = `notification notification-${type}`;
@@ -118,7 +123,7 @@ function showNotification(message, type = 'info') {
             <button class="notification-close">&times;</button>
         </div>
     `;
-    
+
     // Add styles
     notification.style.cssText = `
         position: fixed;
@@ -134,22 +139,22 @@ function showNotification(message, type = 'info') {
         transition: transform 0.3s ease;
         max-width: 350px;
     `;
-    
+
     // Add to document
     document.body.appendChild(notification);
-    
+
     // Animate in
     setTimeout(() => {
         notification.style.transform = 'translateX(0)';
     }, 10);
-    
+
     // Add close functionality
     const closeBtn = notification.querySelector('.notification-close');
     closeBtn.addEventListener('click', () => {
         notification.style.transform = 'translateX(400px)';
         setTimeout(() => notification.remove(), 300);
     });
-    
+
     // Auto remove after 5 seconds
     setTimeout(() => {
         if (notification.parentNode) {
@@ -163,7 +168,7 @@ function showNotification(message, type = 'info') {
 function typeWriter(element, text, speed = 100) {
     let i = 0;
     element.innerHTML = '';
-    
+
     function type() {
         if (i < text.length) {
             element.innerHTML += text.charAt(i);
@@ -171,7 +176,7 @@ function typeWriter(element, text, speed = 100) {
             setTimeout(type, speed);
         }
     }
-    
+
     type();
 }
 
@@ -186,7 +191,7 @@ window.addEventListener('load', () => {
 window.addEventListener('scroll', () => {
     const scrolled = window.pageYOffset;
     const parallaxElements = document.querySelectorAll('.floating-element');
-    
+
     parallaxElements.forEach((element, index) => {
         const speed = 0.5 + (index * 0.2);
         element.style.transform = `translateY(${scrolled * speed}px)`;
@@ -198,7 +203,7 @@ document.querySelectorAll('.skill-item').forEach(item => {
     item.addEventListener('mouseenter', function() {
         this.style.transform = 'translateX(8px) scale(1.05)';
     });
-    
+
     item.addEventListener('mouseleave', function() {
         this.style.transform = 'translateX(0) scale(1)';
     });
@@ -210,16 +215,16 @@ document.querySelectorAll('.project-card').forEach(card => {
         const rect = this.getBoundingClientRect();
         const x = e.clientX - rect.left;
         const y = e.clientY - rect.top;
-        
+
         const centerX = rect.width / 2;
         const centerY = rect.height / 2;
-        
+
         const rotateX = (y - centerY) / 10;
         const rotateY = (centerX - x) / 10;
-        
+
         this.style.transform = `perspective(1000px) rotateX(${rotateX}deg) rotateY(${rotateY}deg) translateY(-8px)`;
     });
-    
+
     card.addEventListener('mouseleave', function() {
         this.style.transform = 'perspective(1000px) rotateX(0deg) rotateY(0deg) translateY(0px)';
     });
@@ -237,7 +242,7 @@ const animateStats = () => {
         const finalValue = parseInt(stat.textContent);
         let currentValue = 0;
         const increment = finalValue / 50;
-        
+
         const timer = setInterval(() => {
             currentValue += increment;
             if (currentValue >= finalValue) {
@@ -275,7 +280,7 @@ document.querySelectorAll('.btn').forEach(button => {
         const size = Math.max(rect.width, rect.height);
         const x = e.clientX - rect.left - size / 2;
         const y = e.clientY - rect.top - size / 2;
-        
+
         ripple.style.cssText = `
             position: absolute;
             width: ${size}px;
@@ -288,11 +293,11 @@ document.querySelectorAll('.btn').forEach(button => {
             animation: ripple 0.6s linear;
             pointer-events: none;
         `;
-        
+
         this.style.position = 'relative';
         this.style.overflow = 'hidden';
         this.appendChild(ripple);
-        
+
         setTimeout(() => ripple.remove(), 600);
     });
 });
@@ -306,14 +311,14 @@ style.textContent = `
             opacity: 0;
         }
     }
-    
+
     .notification-content {
         display: flex;
         align-items: center;
         justify-content: space-between;
         gap: 1rem;
     }
-    
+
     .notification-close {
         background: none;
         border: none;
@@ -323,7 +328,7 @@ style.textContent = `
         padding: 0;
         line-height: 1;
     }
-    
+
     .notification-close:hover {
         opacity: 0.8;
     }
