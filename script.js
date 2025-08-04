@@ -1,3 +1,7 @@
+// dotenv.config()
+
+
+
 // Mobile Navigation Toggle
 const hamburger = document.querySelector('.hamburger');
 const navMenu = document.querySelector('.nav-menu');
@@ -158,6 +162,39 @@ function showNotification(message, type = 'info') {
         }
     }, 5000);
 }
+
+
+// Initialize EmailJS with your Public Key
+// Initialize EmailJS with your Public Key
+(function() {
+    // Replace 'YOUR_PUBLIC_KEY' with your actual EmailJS Public Key.
+    // This key is found in your EmailJS account under 'Account' -> 'API Keys'.
+    emailjs.init({
+        publicKey: 'YOUR_PUBLIC_KEY', 
+    });
+})();
+
+// Contact form handling using EmailJS
+document.getElementById('contactForm').addEventListener('submit', function(e) {
+    e.preventDefault();
+
+    // The service ID, template ID, and form element are all required.
+    // Replace 'service_bhavini6' with your Service ID, and 'YOUR_TEMPLATE_ID' with your Template ID.
+    // The form element is retrieved using its ID 'contactForm'.
+    const serviceID = 'service_bhavini6';
+    const templateID = 'YOUR_TEMPLATE_ID'; // Replace with your actual Template ID
+
+    emailjs.sendForm(serviceID, templateID, this)
+        .then(() => {
+            showNotification('Message sent successfully!', 'success');
+            // Reset form
+            this.reset();
+        }, (error) => {
+            showNotification('Failed to send the message. Please try again later.', 'error');
+            console.error('FAILED...', error);
+        });
+});
+
 
 // Typing animation for hero subtitle
 function typeWriter(element, text, speed = 100) {
