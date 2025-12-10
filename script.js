@@ -66,7 +66,7 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     // Add fade-in animation to cards
-    document.querySelectorAll('.skill-category, .project-card, .education-card, .about-card').forEach(el => {
+    document.querySelectorAll('.skill-category, .project-card, .education-card, .experience-card, .about-card').forEach(el => {
         el.classList.add('fade-in');
         observer.observe(el);
     });
